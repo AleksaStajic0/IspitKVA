@@ -1,0 +1,28 @@
+.form-container {
+  height: 100vh; /* full screen */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+mat-card {
+  width: 400px;
+  padding: 20px;
+}
+.full-width {
+  width: 100%;
+}
+.success-message {
+  color: green;
+  font-weight: 500;
+}
+
+.error-message {
+  color: red;
+  font-weight: 500;
+}
+
+.message {
+  margin-top: 16px;
+  text-align: center;
+}

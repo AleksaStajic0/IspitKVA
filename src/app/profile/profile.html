@@ -1,0 +1,19 @@
+<div fxLayout="row" fxLayoutAlign="center start" class="user-container" *ngIf="isLoggedin()">
+  <mat-card fxFlex="400px">
+    <mat-card-header>
+      <mat-card-title>{{ user?.firstName }} {{ user?.lastName }}</mat-card-title>
+      <mat-card-subtitle>{{ user?.email }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content fxLayout="column" fxLayoutGap="10px">
+      <p><strong>Phone:</strong> {{ user?.phone }}</p>
+      <p><strong>Address:</strong> {{ user?.address }}</p>
+      <p><strong>Favorite Genres:</strong> {{ favoriteGenres }}</p>
+      <p><strong>Password:</strong> ••••••••</p>
+    </mat-card-content>
+
+    <mat-card-actions fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+      <button routerLink="/profile-edit" mat-raised-button color="primary">Edit Profile</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

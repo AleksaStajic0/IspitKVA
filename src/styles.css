@@ -1,1 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/cyan-orange';
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@media only screen and (max-width: 800px) {
+    .wrapper {
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media only screen and (max-width: 780px) {
+    .hide-780 {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .hide-600 {
+        display: none;
+    }
+}

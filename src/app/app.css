@@ -1,0 +1,24 @@
+.spacer {
+    flex: 1 1 auto;
+}
+
+.app-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+mat-toolbar {
+    position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+@media only screen and (max-width: 630px) {
+    .link-name {
+        display: none;
+    }
+
+    .about-btn {
+        display: none;
+    }
+}

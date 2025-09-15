@@ -1,0 +1,179 @@
+<div class="home-container">
+  <!-- Welcome Section -->
+  <mat-card class="welcome-card" color="primary">
+    <mat-card-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
+      <h1>Welcome to Cinema Reservation App</h1>
+      <p>Discover and book your favorite movies with ease. Enjoy the latest blockbusters and timeless classics!</p>
+      
+      <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="16px" fxLayoutAlign="center">
+        <button mat-raised-button color="primary" routerLink="/movies">
+          <mat-icon>movie</mat-icon>
+          Browse All Movies
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px" class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Loading movies...</p>
+  </div>
+
+  <!-- Content when not loading -->
+  <div *ngIf="!loading">
+    
+    <!-- Featured Movies Section -->
+    <section class="movie-section">
+      <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="8px" class="section-header">
+        <h2 class="white-title">
+          <mat-icon>star</mat-icon>
+          Featured Movies
+        </h2>
+        <p class="section-subtitle">Hand-picked selections just for you</p>
+      </div>
+      
+      <div fxLayout="row wrap" 
+           fxLayoutGap="16px grid" 
+           fxLayoutAlign="center start"
+           class="movies-container">
+        <div fxFlex="100" 
+             fxFlex.gt-xs="50" 
+             fxFlex.gt-sm="33" 
+             fxFlex.gt-md="25"
+             fxFlex.gt-lg="20"
+             *ngFor="let movie of featuredMovies">
+          
+          <mat-card class="movie-card featured-card">
+            <div class="poster-wrapper">
+              <img mat-card-image 
+                   [src]="movie.posterUrl" 
+                   [alt]="movie.title"
+                   (error)="onImageError($event)"
+                   class="movie-poster">
+              <mat-chip class="featured-chip" color="accent">
+                <mat-icon>star</mat-icon>
+                Featured
+              </mat-chip>
+            </div>
+            
+            <mat-card-header>
+              <mat-card-title>{{ movie.title }}</mat-card-title>
+              <mat-card-subtitle>{{ movie.director }} • {{ movie.duration }}min</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <p class="movie-description">{{ getShortDescription(movie) }}</p>
+              
+              <div fxLayout="column" fxLayoutGap="12px">
+                <mat-chip-set>
+                  <mat-chip>{{ movie.genre }}</mat-chip>
+                </mat-chip-set>
+                
+                <div class="cast-info">
+                  <strong>Cast:</strong> {{ getMainActors(movie) }}
+                </div>
+                
+                <mat-card *ngIf="getNextScreening(movie)" class="screening-card">
+                  <mat-card-content>
+                    <div><strong>Next Screening:</strong></div>
+                    <div>{{ getNextScreening(movie)?.dateTime | date:'medium' }}</div>
+                    <div class="price">{{ getNextScreening(movie)?.price }} RSD</div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions fxLayout="row" fxLayoutGap="8px">
+             
+              <button mat-raised-button 
+                      color="primary" 
+                      *ngIf="getNextScreening(movie)"
+                      (click)="addToCart(movie)"
+                      [disabled]="!canAddToCart(movie)"
+                      fxFlex>
+                <mat-icon>add_shopping_cart</mat-icon>
+                Add
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </section>
+
+    <section class="movie-section">
+      <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="8px" class="section-header">
+        <h2 class="white-title">
+          <mat-icon>recommend</mat-icon>
+          Recommended for You
+        </h2>
+        <p class="section-subtitle">More great movies you might enjoy</p>
+      </div>
+      
+      <div fxLayout="row wrap" 
+           fxLayoutGap="16px grid" 
+           fxLayoutAlign="center start"
+           class="movies-container">
+        <div fxFlex="100" 
+             fxFlex.gt-xs="50" 
+             fxFlex.gt-sm="50" 
+             fxFlex.gt-md="33"
+             fxFlex.gt-lg="25"
+             *ngFor="let movie of recommendedMovies">
+          
+          <mat-card class="movie-card">
+            <div class="poster-wrapper">
+              <img mat-card-image 
+                   [src]="movie.posterUrl" 
+                   [alt]="movie.title"
+                   (error)="onImageError($event)"
+                   class="movie-poster">
+            </div>
+            
+            <mat-card-header>
+              <mat-card-title>{{ movie.title }}</mat-card-title>
+              <mat-card-subtitle>{{ movie.director }} • {{ movie.duration }}min</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <p class="movie-description">{{ getShortDescription(movie) }}</p>
+              
+              <div fxLayout="column" fxLayoutGap="12px">
+                <mat-chip-set>
+                  <mat-chip>{{ movie.genre }}</mat-chip>
+                </mat-chip-set>
+                
+                <div class="cast-info">
+                  <strong>Cast:</strong> {{ getMainActors(movie) }}
+                </div>
+                
+                <mat-card *ngIf="getNextScreening(movie)" class="screening-card">
+                  <mat-card-content>
+                    <div><strong>Next Screening:</strong></div>
+                    <div>{{ getNextScreening(movie)?.dateTime | date:'medium' }}</div>
+                    <div class="price">{{ getNextScreening(movie)?.price }} RSD</div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions fxLayout="row" fxLayoutGap="8px">
+              
+              
+              <button mat-raised-button 
+                      color="primary" 
+                      *ngIf="getNextScreening(movie)"
+                      (click)="addToCart(movie)"
+                      [disabled]="!canAddToCart(movie)"
+                      fxFlex>
+                <mat-icon>add_shopping_cart</mat-icon>
+                Add
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

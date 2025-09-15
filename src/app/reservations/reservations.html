@@ -1,0 +1,168 @@
+<div fxLayout="column" fxLayoutGap="24px" class="reservations-container">
+  <mat-card class="header-card">
+    <mat-card-header>
+      <div mat-card-avatar class="header-avatar">
+        <mat-icon>movie</mat-icon>
+      </div>
+      <mat-card-title>My Reservations</mat-card-title>
+      <mat-card-subtitle>Manage your movie reservations and reviews</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayout.lt-md="column" fxLayoutGap="16px">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px" class="stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ getReservationStats().total }}</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getReservationStats().reserved }}</span>
+            <span class="stat-label">Reserved</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getReservationStats().watched }}</span>
+            <span class="stat-label">Watched</span>
+          </div>
+        </div>
+        
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Filter by Status</mat-label>
+          <mat-select [(value)]="selectedStatus" (selectionChange)="onStatusChange()">
+            <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="filteredReservations.length === 0" class="empty-state">
+    <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
+      <mat-icon class="empty-icon">movie_filter</mat-icon>
+      <h3>No reservations found</h3>
+      <p *ngIf="selectedStatus === 'all'">You haven't made any movie reservations yet.</p>
+      <p *ngIf="selectedStatus !== 'all'">No reservations with status "{{ selectedStatus }}" found.</p>
+    </div>
+  </mat-card>
+
+  <div *ngIf="filteredReservations.length > 0" class="reservations-grid" 
+       fxLayout="row wrap" fxLayoutGap="24px grid">
+    
+    <div *ngFor="let reservation of filteredReservations; trackBy: trackByFn" 
+         fxFlex="100" fxFlex.gt-sm="48" fxFlex.gt-md="32">
+      
+      <mat-card class="reservation-card">
+        <div class="status-badge" [ngClass]="'status-' + reservation.status">
+          <mat-icon>{{ getStatusIcon(reservation.status) }}</mat-icon>
+          <span>{{ reservation.status | titlecase }}</span>
+        </div>
+
+
+        <div fxLayout="row" fxLayoutGap="16px" class="card-header">
+          <div class="poster-container">
+            <img 
+              [src]="reservation.screening?.movie?.posterUrl || 'https://via.placeholder.com/80x120/424242/ffffff?text=No+Image'" 
+              [alt]="reservation.screening?.movie?.title + ' poster'"
+              class="movie-poster"
+              (error)="$event.target.src='https://via.placeholder.com/80x120/424242/ffffff?text=No+Image'">
+          </div>
+
+          <div fxFlex fxLayout="column" fxLayoutGap="8px" class="movie-info">
+            <h3 class="movie-title">{{ reservation.screening?.movie?.title }}</h3>
+            <div fxLayout="row" fxLayoutGap="8px">
+              <mat-chip class="genre-chip">{{ reservation.screening?.movie?.genre }}</mat-chip>
+              <mat-chip class="duration-chip">{{ getFormattedDuration(reservation.screening?.movie?.duration) }}</mat-chip>
+            </div>
+          </div>
+        </div>
+
+
+        <mat-card-content class="screening-details">
+          <div fxLayout="column" fxLayoutGap="12px">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px" class="detail-row">
+              <mat-icon class="detail-icon">schedule</mat-icon>
+              <span>{{ formatDateTime(reservation.screening.dateTime) }}</span>
+            </div>
+            
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px" class="detail-row">
+              <mat-icon class="detail-icon">event_seat</mat-icon>
+              <span>{{ reservation.screening?.totalSeats }} seats ({{ reservation.screening.availableSeats }} available)</span>
+            </div>
+            
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px" class="detail-row">
+              <mat-icon class="detail-icon">attach_money</mat-icon>
+              <span class="price">{{ reservation.screening.price | currency:'RSD':'symbol':'1.0-0' }}</span>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px" class="detail-row">
+              <mat-icon class="detail-icon">calendar_today</mat-icon>
+              <span class="reservation-date">Reserved: {{ reservation.reservationDate | date:'short' }}</span>
+            </div>
+          </div>
+
+
+          <div *ngIf="reservation.screening?.movie?.rating" class="movie-rating">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+              <mat-icon class="star-icon">star</mat-icon>
+              <span style="color: black">{{ reservation.screening?.movie?.rating }}/5</span>
+              <span class="rating-label">Movie Rating</span>
+            </div>
+          </div>
+
+
+          <div *ngIf="reservation.rating && reservation.status === 'watched'" class="user-rating">
+            <h4>Your Rating:</h4>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px" class="rating-stars">
+              <mat-icon 
+                *ngFor="let star of getRatingStars(5)" 
+                class="user-star"
+                [class.filled]="star <= reservation.rating">
+                star
+              </mat-icon>
+              <span class="rating-text">({{ reservation.rating }}/5)</span>
+            </div>
+            <p *ngIf="reservation.review" class="user-review">{{ reservation.review }}</p>
+          </div>
+        </mat-card-content>
+
+
+        <mat-card-actions class="card-actions">
+          <div fxLayout="row" fxLayoutGap="8px" class="action-buttons">
+
+            <ng-container *ngIf="reservation.status === 'reserved'">
+              <button mat-raised-button color="primary" 
+                      (click)="markAsWatched(reservation.id)"
+                      matTooltip="Mark as watched">
+                <mat-icon>check_circle</mat-icon>
+                Watched
+              </button>
+              
+              <button mat-stroked-button color="warn" 
+                      (click)="cancelReservation(reservation.id)"
+                      [disabled]="!canCancelReservation(reservation)"
+                      >
+                <mat-icon>cancel</mat-icon>
+                Cancel
+              </button>
+            </ng-container>
+
+
+            <ng-container *ngIf="reservation.status === 'watched'">
+              <button mat-raised-button color="accent" 
+                      
+                      >
+                <mat-icon>{{ reservation.rating ? 'edit' : 'star_rate' }}</mat-icon>
+                {{ reservation.rating ? 'Update Rating' : 'Rate Movie' }}
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="reservation.status === 'cancelled'">
+              <span class="cancelled-text">This reservation has been cancelled</span>
+            </ng-container>
+          </div>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

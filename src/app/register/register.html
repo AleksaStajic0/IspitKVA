@@ -1,0 +1,60 @@
+<div fxLayout="row" fxLayoutAlign="center center" class="form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title color="primary">Register</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutGap="15px">
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Phone</mat-label>
+          <input matInput type="tel" formControlName="phone" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="address" />
+        </mat-form-field>
+
+        <div class="genres" fxLayout="column" fxLayoutGap="10px">
+          <p>Select Favorite Genres:</p>
+          <mat-chip-listbox multiple>
+            <mat-chip-option
+              *ngFor="let genre of genres"
+              [selected]="registerForm.value.favoriteGenres.includes(genre)"
+              (click)="toggleGenre(genre)"
+              color="primary">
+              {{ genre }}
+            </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" />
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+          Register
+        </button>
+
+      </form>
+      <p class="message" *ngIf="message">{{ message }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>

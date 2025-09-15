@@ -1,0 +1,68 @@
+<div fxLayout="row" fxLayoutAlign="center center" class="form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title color="primary">Edit Profile</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="editForm" (ngSubmit)="onSubmit()" fxLayout="column" fxLayoutGap="15px">
+        
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" placeholder="Enter your first name" />
+          <mat-error *ngIf="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched">
+            First name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" placeholder="Enter your last name" />
+          <mat-error *ngIf="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched">
+            Last name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="Enter your email address" />
+          <mat-error *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched">
+            <span *ngIf="editForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="editForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Phone</mat-label>
+          <input matInput type="tel" formControlName="phone" placeholder="Enter your phone number" />
+          <mat-error *ngIf="editForm.get('phone')?.invalid && editForm.get('phone')?.touched">
+            Phone number is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="address" placeholder="Enter your address" />
+          <mat-error *ngIf="editForm.get('address')?.invalid && editForm.get('address')?.touched">
+            Address is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width" color="accent">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Enter your password" />
+          <mat-error *ngIf="editForm.get('password')?.invalid && editForm.get('password')?.touched">
+            <span *ngIf="editForm.get('password')?.errors?.['required']">Password is required</span>
+            <span *ngIf="editForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="editForm.invalid">
+          Update Profile
+        </button>
+       
+      </form>
+      <p class="message" *ngIf="message" [ngClass]="{'success-message': message.includes('successfully'), 'error-message': message.includes('Error')}">
+        {{ message }}
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>
