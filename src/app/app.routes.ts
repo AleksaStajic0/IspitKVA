@@ -8,11 +8,13 @@ import { Search } from './search/search';
 import { Cart } from './cart/cart';
 import { Reservations } from './reservations/reservations';
 import { ProfileEdit } from './profile-edit/profile-edit';
+import { MovieDetail } from './movie-detail/movie-detail';
 
 
 export const routes: Routes = [
   { path: '', component: Home },
   { path: 'movies', component: Movies },
+  { path: 'movies/:id', component: MovieDetail},
   { path: 'search', component: Search },
   { path: 'cart', component: Cart },
   { path: 'profile', component: Profile },
